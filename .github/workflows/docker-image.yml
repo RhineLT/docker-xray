@@ -25,3 +25,4 @@ jobs:
         
     - name: Push the Docker image
       run: docker push rhinelt/docker-xray
+      
