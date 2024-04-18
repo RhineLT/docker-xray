@@ -16,25 +16,56 @@ then
 
     cat > ./config.json <<EOF
 {
-    "inbounds": [{
-        "port": ${PORT},
-        "protocol": "vless",
-        "settings": {
-            "clients": [{
-                "id": "${ID}"
-            }],
-            "decryption":"none"
-        },
-        "streamSettings": {
-            "network": "ws",
-            "wsSettings": {
-                "path": "${WSPATH}"
-            }
-        }
-    }],
-    "outbounds": [{
-        "protocol": "freedom"
-    }]
+  "inbounds": [{
+      "port": ${PORT},
+      "protocol": "vless",
+      "settings": {
+          "clients": [{
+              "id": "${ID}"
+          }],
+          "decryption":"none"
+      },
+      "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+              "path": "${WSPATH}"
+          }
+      }
+  }],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "block"
+      },
+      {
+        "type": "field",
+        "ip": ["geoip:cn"],
+        "outboundTag": "block"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "geosite:category-ads-all"
+        ],
+        "outboundTag": "block"
+      }
+    ]
+  },
+  "outbounds": [
+    {
+      "tag": "direct",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    }
+  ]
 }
 EOF
 else
