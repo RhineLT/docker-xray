@@ -16,6 +16,10 @@ then
 
     cat > ./config.json <<EOF
 {
+  "log": {
+    "loglevel": "warning",
+    "dnsLog": true
+  },
   "inbounds": [{
       "port": ${PORT},
       "protocol": "vless",
